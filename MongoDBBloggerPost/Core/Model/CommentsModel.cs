@@ -7,6 +7,8 @@ namespace MongoDBBloggerPost.Model
 {
     public class CommentsModel
     {
-        
+        public string _id { get; set; }
+        // public string userId { get; set; }
+        public string comment { get; set; }
     }
 }
