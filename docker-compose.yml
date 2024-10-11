@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  mongo:
+    image: mongodb/mongodb-community-server:7.0.5-ubuntu2204
+    container_name: mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root       # Define the root username
+      MONGO_INITDB_ROOT_PASSWORD: example123 # Define the root password
+    ports:
+      - "27017:27017" # Expose MongoDB on port 27017 to your host machine
+    volumes:
+      - mongo_data:/data/db  # Persist MongoDB data to a Docker volume
+volumes:
+  mongo_data:
