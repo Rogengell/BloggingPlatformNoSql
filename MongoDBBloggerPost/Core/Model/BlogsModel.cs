@@ -1,15 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace MongoDBBloggerPost.Model
 {
-    public class BlogsModel
+    public class BlogsModel : IBaseEntity
     {
-        public string _id { get; set; }
-        public string blogName { get; set; }
+        [BsonId]
+        public ObjectId _id { get; set; }
+        public string? blogName { get; set; }
         public string description { get; set; } = "";
-        public List<string> postIds { get; set; }
+        public List<ObjectId>? postIds { get; set; }
     }
 }

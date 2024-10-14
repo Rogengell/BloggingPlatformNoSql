@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace MongoDBBloggerPost.Model
 {
-    public class CommentsModel
+    public class CommentsModel : IBaseEntity
     {
-        public string _id { get; set; }
+        [BsonId]
+        public ObjectId _id { get; set; }
         // public string userId { get; set; }
-        public string comment { get; set; }
+        public string? comment { get; set; }
     }
 }
