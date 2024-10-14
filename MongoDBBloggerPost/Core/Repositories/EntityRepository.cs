@@ -4,13 +4,13 @@ using MongoDBBloggerPost.Core.MongoClient;
 
 namespace MongoDBBloggerPost.Core.Repositories
 {
-    public class GenericRepository<T> where T : IBaseEntity
+    public class EntityRepository<T> where T : IBaseEntity
     {
         private readonly Client _client;
         public readonly string _databaseName;
         public readonly string _collectionName;
 
-        public GenericRepository(Client client, string collectionName, string databaseName = "MongoDBBloggerPost")
+        public EntityRepository(Client client, string collectionName, string databaseName = "MongoDBBloggerPost")
         {
             _client = client;
             _databaseName = databaseName;

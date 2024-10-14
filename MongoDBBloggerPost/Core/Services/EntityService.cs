@@ -3,11 +3,11 @@ using MongoDBBloggerPost.Model;
 
 namespace MongoDBBloggerPost.Core.Services
 {
-    public class GenericService<T> where T : IBaseEntity
+    public class EntityService<T> where T : IBaseEntity
     {
-        private readonly GenericRepository<T> _repository;
+        private readonly EntityRepository<T> _repository;
 
-        public GenericService(GenericRepository<T> repository)
+        public EntityService(EntityRepository<T> repository)
         {
             _repository = repository;
         }
