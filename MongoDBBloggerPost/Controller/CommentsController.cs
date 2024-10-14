@@ -10,6 +10,6 @@ namespace MongoDBBloggerPost.Controller
     [Route("[controller]")]
     public class CommentsController : ControllerBase
     {
-        
+        //TODO: Add comments controller
     }
 }
