@@ -20,16 +20,28 @@ namespace MongoDBBloggerPost.Controller
             _entityService = entityService;
         }
 
-        [HttpGet]
-        public UsersModel GetbyIds(string id)
+        [HttpGet("GetUsers")]
+        public UsersModel GetUser(string id)
         {
             return _entityService.GetById(id);
         }
 
-        [HttpPost]
+        [HttpPost("SaveUser")]
         public void SaveUser(UsersModel user)
         {
             _entityService.Save(user);
+        }
+
+        [HttpPut("UpdateUser")]
+        public void UpdateUser(UsersModel user)
+        {
+            _entityService.Update(user);
+        }
+
+        [HttpDelete("DeleteUser")]
+        public void DeleteUser(UsersModel user)
+        {
+            _entityService.Delete(user);
         }
     }
 }

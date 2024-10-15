@@ -22,9 +22,19 @@ namespace MongoDBBloggerPost.Core.Services
             _repository.InsertOne(item);
         }
 
-        public void SaveMany(IEnumerable<T> items)
+        // public void SaveMany(IEnumerable<T> items)
+        // {
+        //     _repository.InsertMany(items);
+        // }
+
+        public void Update(T item)
         {
-            _repository.InsertMany(items);
+            _repository.Update(item);
+        }
+
+        public void Delete(T item)
+        {
+            _repository.Delete(item);
         }
     }
 }

@@ -20,13 +20,13 @@ namespace MongoDBBloggerPost.Controller
             _entityService = entityService;
         }
 
-        [HttpGet]
-        public BlogsModel GetbyId(string id)
+        [HttpGet("GetBlog")]
+        public BlogsModel GetBlog(string id)
         {
             return _entityService.GetById(id);
         }
 
-        [HttpPost]
+        [HttpPost("SaveBlog")]
         public void SaveBlog(BlogsModel blog, string userId)
         {
             _entityService.Save(blog);

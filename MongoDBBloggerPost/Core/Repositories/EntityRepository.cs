@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDBBloggerPost.Core.Helpers;
 using MongoDBBloggerPost.Core.MongoClient;
 
 namespace MongoDBBloggerPost.Core.Repositories
@@ -31,10 +32,22 @@ namespace MongoDBBloggerPost.Core.Repositories
             collection.InsertOne(item);
         }
 
-        public void InsertMany(IEnumerable<T> items)
+        // public void InsertMany(IEnumerable<T> items)
+        // {
+        //     var collection = _client.Collection<T>(_databaseName, _collectionName);
+        //     collection.InsertMany(items);
+        // }
+
+        public void Update(T item)
         {
             var collection = _client.Collection<T>(_databaseName, _collectionName);
-            collection.InsertMany(items);
+            collection.ReplaceOne(x => x._id == item._id, item);
+        }
+
+        public void Delete(T item)
+        {
+            var collection = _client.Collection<T>(_databaseName, _collectionName);
+            collection.DeleteOne(x => x._id == item._id);
         }
     }
 }

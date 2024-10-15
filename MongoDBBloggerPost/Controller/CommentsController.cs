@@ -17,19 +17,31 @@ namespace MongoDBBloggerPost.Controller
 
         public CommentsController(EntityService<CommentsModel> entityService)
         {
-            _entityService = entityService; 
+            _entityService = entityService;
         }
 
-        [HttpGet]
-        public CommentsModel GetbyId(string id)
+        [HttpGet("GetComments")]
+        public CommentsModel GetComments(string id)
         {
             return _entityService.GetById(id);
         }
 
-        [HttpPost]
+        [HttpPost("SaveComment")]
         public void SaveComment(CommentsModel comment, string postId)
         {
             _entityService.Save(comment);
+        }
+
+        [HttpPut("UpdateComment")]
+        public void UpdateComment(CommentsModel comment)
+        {
+            _entityService.Update(comment);
+        }
+
+        [HttpDelete("DeleteComment")]
+        public void DeleteComment(string id)
+        {
+            _entityService.Delete(_entityService.GetById(id));
         }
     }
 }
