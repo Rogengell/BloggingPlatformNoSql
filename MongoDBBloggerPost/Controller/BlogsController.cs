@@ -31,5 +31,17 @@ namespace MongoDBBloggerPost.Controller
         {
             _entityService.Save(blog);
         }
+
+        [HttpPut("UpdateBlog")]
+        public void UpdateBlog(BlogsModel blog)
+        {
+            _entityService.Update(blog);
+        }
+
+        [HttpDelete("DeleteBlog")]
+        public void DeleteBlog(BlogsModel blog)
+        {
+            _entityService.Delete(blog);
+        }
     }
 }
