@@ -21,27 +21,27 @@ namespace MongoDBBloggerPost.Controller
         }
 
         [HttpGet("GetComments")]
-        public CommentsModel GetComments(string id)
+        public async Task<CommentsModel> GetComments(string id)
         {
-            return _entityService.GetById(id);
+            return await _entityService.GetById(id);
         }
 
         [HttpPost("SaveComment")]
-        public void SaveComment(CommentsModel comment, string postId)
+        public async Task SaveComment(CommentsModel comment, string postId)
         {
-            _entityService.Save(comment);
+            await _entityService.Save(comment);
         }
 
         [HttpPut("UpdateComment")]
-        public void UpdateComment(CommentsModel comment)
+        public async Task UpdateComment(CommentsModel comment)
         {
-            _entityService.Update(comment);
+            await _entityService.Update(comment);
         }
 
         [HttpDelete("DeleteComment")]
-        public void DeleteComment(string id)
+        public async Task DeleteComment(string id)
         {
-            _entityService.Delete(_entityService.GetById(id));
+            await _entityService.Delete(GetComments(id).Result);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using MongoDBBloggerPost.Core.MongoClient;
 using MongoDBBloggerPost.Core.Services;
 using MongoDBBloggerPost.Model;
 
@@ -13,35 +14,62 @@ namespace MongoDBBloggerPost.Controller
     public class BlogsController : ControllerBase
     {
         //TODO: Add Controller for Blog
-        private readonly EntityService<BlogsModel> _entityService;
+        private readonly EntityService<BlogsModel> _blogService;
+        private readonly EntityService<PostsModel> _postService;
 
-        public BlogsController(EntityService<BlogsModel> entityService)
+        public BlogsController(EntityService<BlogsModel> blogService, EntityService<PostsModel> postService)
         {
-            _entityService = entityService;
+            _blogService = blogService;
+            _postService = postService;
         }
 
         [HttpGet("GetBlog")]
-        public BlogsModel GetBlog(string id)
+        public async Task<BlogsModel> GetBlog(string id)
         {
-            return _entityService.GetById(id);
+            return await _blogService.GetById(id);
+        }
+
+        [HttpGet("GetAllBlogPosts")]
+        public async Task<List<PostsModel>> GetBlogs(string id)
+        {
+            try
+            {
+                var blog = await _blogService.GetById(id);
+                var posts = new List<PostsModel>();
+
+                if (blog.postIds != null)
+                {
+                    foreach (var postId in blog.postIds)
+                    {
+                        posts.Add(await _postService.GetById(postId.ToString()));
+                    }
+                }
+
+                return posts;
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         [HttpPost("SaveBlog")]
-        public void SaveBlog(BlogsModel blog, string userId)
+        public async Task SaveBlog(BlogsModel blog, string userId)
         {
-            _entityService.Save(blog);
+            await _blogService.Save(blog);
         }
 
         [HttpPut("UpdateBlog")]
-        public void UpdateBlog(BlogsModel blog)
+        public async Task UpdateBlog(BlogsModel blog)
         {
-            _entityService.Update(blog);
+            await _blogService.Update(blog);
         }
 
         [HttpDelete("DeleteBlog")]
-        public void DeleteBlog(BlogsModel blog)
+        public async Task DeleteBlog(BlogsModel blog)
         {
-            _entityService.Delete(blog);
+            await _blogService.Delete(blog);
         }
     }
 }

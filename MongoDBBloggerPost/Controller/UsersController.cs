@@ -21,27 +21,27 @@ namespace MongoDBBloggerPost.Controller
         }
 
         [HttpGet("GetUsers")]
-        public UsersModel GetUser(string id)
+        public async Task<UsersModel> GetUser(string id)
         {
-            return _entityService.GetById(id);
+            return await _entityService.GetById(id);
         }
 
         [HttpPost("SaveUser")]
-        public void SaveUser(UsersModel user)
+        public async Task SaveUser(UsersModel user)
         {
-            _entityService.Save(user);
+            await _entityService.Save(user);
         }
 
         [HttpPut("UpdateUser")]
-        public void UpdateUser(UsersModel user)
+        public async Task UpdateUser(UsersModel user)
         {
-            _entityService.Update(user);
+            await _entityService.Update(user);
         }
 
         [HttpDelete("DeleteUser")]
-        public void DeleteUser(UsersModel user)
+        public async Task DeleteUser(UsersModel user)
         {
-            _entityService.Delete(user);
+            await _entityService.Delete(user);
         }
     }
 }

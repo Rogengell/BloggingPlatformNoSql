@@ -2,6 +2,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDBBloggerPost.Core.Helpers;
 using MongoDBBloggerPost.Core.MongoClient;
+using MongoDBBloggerPost.Model;
 
 namespace MongoDBBloggerPost.Core.Repositories
 {
@@ -18,18 +19,19 @@ namespace MongoDBBloggerPost.Core.Repositories
             _collectionName = collectionName;
         }
 
-        public T GetById(string id)
+        public async Task<T> GetByIdAsync(string id)
         {
             var objectId = new ObjectId(id);
             var collection = _client.Collection<T>(_databaseName, _collectionName);
 
-            return collection.Find(x => x._id == objectId).FirstOrDefault();
+            return await collection.Find(x => x._id == objectId).FirstOrDefaultAsync();
         }
 
-        public void InsertOne(T item)
+
+        public async Task InsertAsync(T item)
         {
             var collection = _client.Collection<T>(_databaseName, _collectionName);
-            collection.InsertOne(item);
+            await collection.InsertOneAsync(item);
         }
 
         // public void InsertMany(IEnumerable<T> items)
@@ -38,16 +40,16 @@ namespace MongoDBBloggerPost.Core.Repositories
         //     collection.InsertMany(items);
         // }
 
-        public void Update(T item)
+        public async Task UpdateAsync(T item)
         {
             var collection = _client.Collection<T>(_databaseName, _collectionName);
-            collection.ReplaceOne(x => x._id == item._id, item);
+            await collection.ReplaceOneAsync(x => x._id == item._id, item);
         }
 
-        public void Delete(T item)
+        public async Task DeleteAsync(T item)
         {
             var collection = _client.Collection<T>(_databaseName, _collectionName);
-            collection.DeleteOne(x => x._id == item._id);
+            await collection.DeleteOneAsync(x => x._id == item._id);
         }
     }
 }

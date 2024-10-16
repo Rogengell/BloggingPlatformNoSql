@@ -13,35 +13,60 @@ namespace MongoDBBloggerPost.Controller
     public class PostsController : ControllerBase
     {
         //TODO: Add Controller for Posts
-        private readonly EntityService<PostsModel> _entityService;
+        private readonly EntityService<PostsModel> _postService;
+        private readonly EntityService<CommentsModel> _commentService;
 
-        public PostsController(EntityService<PostsModel> entityService)
+        public PostsController(EntityService<PostsModel> entityService, EntityService<CommentsModel> commentService)
         {
-            _entityService = entityService;
+            _postService = entityService;
+            _commentService = commentService;
         }
 
         [HttpGet("GetPosts")]
-        public PostsModel GetPost(string id)
+        public async Task<PostsModel> GetPost(string id)
         {
-            return _entityService.GetById(id);
+            return await _postService.GetById(id);
+        }
+
+        [HttpGet("GetAllPostComments")]
+        public async Task<List<CommentsModel>> GetPostComments(string id)
+        {
+            try
+            {
+                var post = await _postService.GetById(id);
+                var comments = new List<CommentsModel>();
+                if (post.commentIds != null)
+                {
+                    foreach (var commentId in post.commentIds)
+                    {
+                        comments.Add(await _commentService.GetById(commentId.ToString()));
+                    }
+                }
+                return comments;
+            }
+            catch (System.Exception ex)
+            {
+                System.Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         [HttpPost("SavePost")]
-        public void SavePost(PostsModel post, string blogId)
+        public async Task SavePost(PostsModel post, string blogId)
         {
-            _entityService.Save(post);
+            await _postService.Save(post);
         }
 
         [HttpPut("UpdatePost")]
-        public void UpdatePost(PostsModel post)
+        public async Task UpdatePost(PostsModel post)
         {
-            _entityService.Update(post);
+            await _postService.Update(post);
         }
 
         [HttpDelete("DeletePost")]
-        public void DeletePost(PostsModel post)
+        public async Task DeletePost(PostsModel post)
         {
-            _entityService.Delete(post);
+            await _postService.Delete(post);
         }
     }
 }

@@ -12,29 +12,25 @@ namespace MongoDBBloggerPost.Core.Services
             _repository = repository;
         }
 
-        public T GetById(string id)
+        public async Task<T> GetById(string id)
         {
-            return _repository.GetById(id);
+            return await _repository.GetByIdAsync(id);
         }
 
-        public void Save(T item)
+
+        public async Task Save(T item)
         {
-            _repository.InsertOne(item);
+            await _repository.InsertAsync(item);
         }
 
-        // public void SaveMany(IEnumerable<T> items)
-        // {
-        //     _repository.InsertMany(items);
-        // }
-
-        public void Update(T item)
+        public async Task Update(T item)
         {
-            _repository.Update(item);
+            await _repository.UpdateAsync(item);
         }
 
-        public void Delete(T item)
+        public async Task Delete(T item)
         {
-            _repository.Delete(item);
+            await _repository.DeleteAsync(item);
         }
     }
 }
