@@ -17,6 +17,10 @@ namespace MongoDBBloggerPost.Core.Services
             return await _repository.GetByIdAsync(id);
         }
 
+        public async Task<List<T>> GetAll()
+        {
+            return await _repository.GetAllAsync();
+        }
 
         public async Task Save(T item)
         {

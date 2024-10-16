@@ -27,18 +27,17 @@ namespace MongoDBBloggerPost.Core.Repositories
             return await collection.Find(x => x._id == objectId).FirstOrDefaultAsync();
         }
 
+        public async Task<List<T>> GetAllAsync()
+        {
+            var collection = _client.Collection<T>(_databaseName, _collectionName);
+            return await collection.Find(_ => true).ToListAsync();
+        }
 
         public async Task InsertAsync(T item)
         {
             var collection = _client.Collection<T>(_databaseName, _collectionName);
             await collection.InsertOneAsync(item);
         }
-
-        // public void InsertMany(IEnumerable<T> items)
-        // {
-        //     var collection = _client.Collection<T>(_databaseName, _collectionName);
-        //     collection.InsertMany(items);
-        // }
 
         public async Task UpdateAsync(T item)
         {

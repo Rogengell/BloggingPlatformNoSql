@@ -8,6 +8,7 @@ namespace MongoDBBloggerPost.Model
         [BsonId]
         public ObjectId _id { get; set; }
         public ObjectId userId { get; set; }
+        public string userName { get; set; } = "";
         public string? title { get; set; }
         public string? content { get; set; }
         public List<ObjectId>? commentIds { get; set; }

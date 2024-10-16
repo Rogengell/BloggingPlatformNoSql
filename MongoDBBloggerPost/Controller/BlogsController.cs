@@ -55,7 +55,7 @@ namespace MongoDBBloggerPost.Controller
         }
 
         [HttpPost("SaveBlog")]
-        public async Task SaveBlog(BlogsModel blog, string userId)
+        public async Task SaveBlog(BlogsModel blog)
         {
             await _blogService.Save(blog);
         }

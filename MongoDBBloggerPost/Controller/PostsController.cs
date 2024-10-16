@@ -22,10 +22,16 @@ namespace MongoDBBloggerPost.Controller
             _commentService = commentService;
         }
 
-        [HttpGet("GetPosts")]
+        [HttpGet("GetPost")]
         public async Task<PostsModel> GetPost(string id)
         {
             return await _postService.GetById(id);
+        }
+
+        [HttpGet("GetAllPosts")]
+        public async Task<List<PostsModel>> GetAllPosts()
+        {
+            return await _postService.GetAll();
         }
 
         [HttpGet("GetAllPostComments")]
@@ -52,7 +58,7 @@ namespace MongoDBBloggerPost.Controller
         }
 
         [HttpPost("SavePost")]
-        public async Task SavePost(PostsModel post, string blogId)
+        public async Task SavePost(PostsModel post)
         {
             await _postService.Save(post);
         }

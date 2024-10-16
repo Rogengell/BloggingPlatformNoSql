@@ -20,14 +20,20 @@ namespace MongoDBBloggerPost.Controller
             _entityService = entityService;
         }
 
-        [HttpGet("GetComments")]
+        [HttpGet("GetComment")]
         public async Task<CommentsModel> GetComments(string id)
         {
             return await _entityService.GetById(id);
         }
 
+        [HttpGet("GetAllComments")]
+        public async Task<List<CommentsModel>> GetAllComments()
+        {
+            return await _entityService.GetAll();
+        }
+
         [HttpPost("SaveComment")]
-        public async Task SaveComment(CommentsModel comment, string postId)
+        public async Task SaveComment(CommentsModel comment)
         {
             await _entityService.Save(comment);
         }
