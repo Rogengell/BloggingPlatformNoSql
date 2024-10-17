@@ -21,6 +21,13 @@ namespace MongoDBBloggerPost.Core.Repositories
 
         public async Task<T> GetByIdAsync(string id)
         {
+
+            if (!ObjectId.TryParse(id, out _))
+            {
+                // Handle the case where the id is not a valid ObjectId
+                throw new ArgumentException("Invalid ObjectId", nameof(id));
+            }
+
             var objectId = new ObjectId(id);
             var collection = _client.Collection<T>(_databaseName, _collectionName);
 

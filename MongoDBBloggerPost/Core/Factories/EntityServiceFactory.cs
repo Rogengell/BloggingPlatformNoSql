@@ -9,7 +9,7 @@ namespace MongoDBBloggerPost.Core.Factories
     {
         public static EntityService<T> Create(CollectionName collectionName)
         {
-            var client = new Client("mongodb://localhost:27017");
+            var client = new Client("mongodb://root:example123@localhost:27017");
             var repository = new EntityRepository<T>(client, collectionName.ToString());
             return new EntityService<T>(repository);
         }

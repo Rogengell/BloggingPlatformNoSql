@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using MongoDBBloggerPost.Core.Services;
 using MongoDBBloggerPost.Model;
 
@@ -30,24 +31,43 @@ namespace MongoDBBloggerPost.Controller
             return await _userService.GetById(id);
         }
 
+        [HttpGet("GetAllUsers")]
+        public async Task<List<UsersModel>> GetAllUsers()
+        {
+            return await _userService.GetAll();
+        }
+
         [HttpPost("SaveUser")]
         public async Task SaveUser(UsersModel user)
         {
-            await _userService.Save(user);
+            try
+            {
+                if (user == null)
+                {
+                    throw new ArgumentNullException(nameof(user));
+                }
+
+                user._id = ObjectId.GenerateNewId();
+                user.id = user._id.ToString();
+                await _userService.Save(user);
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
         }
 
         [HttpPut("UpdateUser")]
-        public async Task UpdateUser(UsersModel user)
+        public async Task UpdateUser(string id, UsersModel user)
         {
             try
             {
-
-                var oldUser = await _userService.GetById(user._id.ToString());
+                var oldUser = await _userService.GetById(id);
                 if (oldUser != null && oldUser.userName != user.userName)
                 {
                     // Update posts
                     var posts = await _postService.GetAll();
-                    var updatedPosts = posts.Where(p => p.userId == oldUser._id).ToList();
+                    var updatedPosts = posts.Where(p => p.userId == oldUser.id).ToList();
                     foreach (var post in updatedPosts)
                     {
                         post.userName = user.userName;
@@ -64,11 +84,12 @@ namespace MongoDBBloggerPost.Controller
                     }
                 }
 
+                user._id = ObjectId.Parse(id);
                 await _userService.Update(user);
             }
             catch (System.Exception ex)
             {
-                System.Console.WriteLine(ex.Message);
+                System.Console.WriteLine("Invalid ObjectId: " + ex.Message);
                 throw;
             }
         }
