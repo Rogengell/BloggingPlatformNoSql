@@ -12,6 +12,6 @@ namespace MongoDBBloggerPost.Model
         public string? authorId { get; set; }
         public string? blogName { get; set; }
         public string description { get; set; } = "";
-        public List<ObjectId>? postIds { get; set; }
+        public List<string>? postIds { get; set; }
     }
 }

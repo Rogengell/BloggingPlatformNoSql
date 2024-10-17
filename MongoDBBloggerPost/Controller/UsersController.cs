@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -13,14 +14,15 @@ namespace MongoDBBloggerPost.Controller
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        //TODO: Add Controller for User
         private readonly EntityService<UsersModel> _userService;
+        private readonly EntityService<BlogsModel> _blogService;
         private readonly EntityService<PostsModel> _postService;
         private readonly EntityService<CommentsModel> _commentService;
 
-        public UsersController(EntityService<UsersModel> entityService, EntityService<PostsModel> postService, EntityService<CommentsModel> commentService)
+        public UsersController(EntityService<UsersModel> entityService, EntityService<BlogsModel> blogService, EntityService<PostsModel> postService, EntityService<CommentsModel> commentService)
         {
             _userService = entityService;
+            _blogService = blogService;
             _postService = postService;
             _commentService = commentService;
         }
@@ -28,13 +30,60 @@ namespace MongoDBBloggerPost.Controller
         [HttpGet("GetUsers")]
         public async Task<UsersModel> GetUser(string id)
         {
-            return await _userService.GetById(id);
+            try
+            {
+                if(id == null)
+                {
+                    throw new ArgumentNullException(nameof(id));
+                }
+                return await _userService.GetById(id);
+            }
+            catch (System.Exception ex)
+            {
+                System.Console.WriteLine("something went wrong while getting user" + ex.Message);
+                throw;
+            }
         }
 
         [HttpGet("GetAllUsers")]
         public async Task<List<UsersModel>> GetAllUsers()
         {
-            return await _userService.GetAll();
+            try
+            {
+                return await _userService.GetAll();
+            }
+            catch (System.Exception ex)
+            {
+                System.Console.WriteLine("something went wrong while getting all users" + ex.Message);
+                throw;
+            }
+        }
+
+        [HttpGet("GetUserBlogs")]
+        public async Task<List<BlogsModel>> GetUserBlogs(string id)
+        {
+            try
+            {
+                var user = await _userService.GetById(id);
+                var blogs = new List<BlogsModel>();
+
+                if(user.blogIds == null)
+                {
+                    return blogs;
+                }
+                
+                foreach (var blogId in user.blogIds)
+                {
+                    blogs.Add(await _blogService.GetById(blogId));
+                }
+
+                return blogs;
+            }
+            catch (System.Exception ex)
+            {
+                System.Console.WriteLine("something went wrong while getting user blogs" + ex.Message);
+                throw;
+            }
         }
 
         [HttpPost("SaveUser")]
@@ -51,8 +100,9 @@ namespace MongoDBBloggerPost.Controller
                 user.id = user._id.ToString();
                 await _userService.Save(user);
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
+                System.Console.WriteLine("something went wrong while saving user" + ex.Message);
                 throw;
             }
         }
@@ -76,7 +126,7 @@ namespace MongoDBBloggerPost.Controller
 
                     // Update comments
                     var comments = await _commentService.GetAll();
-                    var updatedComments = comments.Where(c => c.userId == oldUser._id).ToList();
+                    var updatedComments = comments.Where(c => c.userId == oldUser.id).ToList();
                     foreach (var comment in updatedComments)
                     {
                         comment.userName = user.userName;
@@ -97,7 +147,17 @@ namespace MongoDBBloggerPost.Controller
         [HttpDelete("DeleteUser")]
         public async Task DeleteUser(UsersModel user)
         {
-            await _userService.Delete(user);
+            try
+            {
+                if (user == null)
+                {
+                    throw new ArgumentNullException(nameof(user));
+                }
+                await _userService.Delete(user);
+            }catch (System.Exception ex)
+            {
+                System.Console.WriteLine("something went wrong while deleting user" + ex.Message);
+            }
         }
     }
 }
