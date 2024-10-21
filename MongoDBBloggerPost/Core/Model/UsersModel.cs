@@ -12,6 +12,6 @@ namespace MongoDBBloggerPost.Model
         public string? userName { get; set; }
         public string email { get; set; } = "";
         public string? password { get; set; }
-        public List<ObjectId>? blogIds { get; set; }
+        public List<string>? blogIds { get; set; }
     }
 }
