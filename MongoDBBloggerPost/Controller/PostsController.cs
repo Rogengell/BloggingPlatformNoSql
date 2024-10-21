@@ -12,7 +12,6 @@ namespace MongoDBBloggerPost.Controller
     [Route("[controller]")]
     public class PostsController : ControllerBase
     {
-        //TODO: Add Controller for Posts
         private readonly EntityService<PostsModel> _postService;
         private readonly EntityService<CommentsModel> _commentService;
 

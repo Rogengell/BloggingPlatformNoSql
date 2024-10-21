@@ -13,14 +13,15 @@ namespace MongoDBBloggerPost.Controller
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        //TODO: Add Controller for User
         private readonly EntityService<UsersModel> _userService;
+        private readonly EntityService<BlogsModel> _blogService;
         private readonly EntityService<PostsModel> _postService;
         private readonly EntityService<CommentsModel> _commentService;
 
-        public UsersController(EntityService<UsersModel> entityService, EntityService<PostsModel> postService, EntityService<CommentsModel> commentService)
+        public UsersController(EntityService<UsersModel> entityService, EntityService<BlogsModel> blogService, EntityService<PostsModel> postService, EntityService<CommentsModel> commentService)
         {
             _userService = entityService;
+            _blogService = blogService;
             _postService = postService;
             _commentService = commentService;
         }
@@ -35,6 +36,30 @@ namespace MongoDBBloggerPost.Controller
         public async Task<List<UsersModel>> GetAllUsers()
         {
             return await _userService.GetAll();
+        }
+
+        [HttpGet("GetUserBlogs")]
+        public async Task<List<BlogsModel>> GetUserBlogs(string id)
+        {
+            try
+            {
+                var user = await _userService.GetById(id);
+                var blogs = new List<BlogsModel>();
+
+                if (user.blogIds != null)
+                {
+                    foreach (var blogId in user.blogIds)
+                    {
+                        blogs.Add(await _blogService.GetById(blogId.ToString()));
+                    }
+                }
+                return blogs;
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         [HttpPost("SaveUser")]

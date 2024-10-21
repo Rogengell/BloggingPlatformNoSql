@@ -13,7 +13,6 @@ namespace MongoDBBloggerPost.Controller
     [Route("[controller]")]
     public class BlogsController : ControllerBase
     {
-        //TODO: Add Controller for Blog
         private readonly EntityService<BlogsModel> _blogService;
         private readonly EntityService<PostsModel> _postService;
 
@@ -30,7 +29,7 @@ namespace MongoDBBloggerPost.Controller
         }
 
         [HttpGet("GetAllBlogPosts")]
-        public async Task<List<PostsModel>> GetBlogs(string id)
+        public async Task<List<PostsModel>> GetBlogPosts(string id)
         {
             try
             {
