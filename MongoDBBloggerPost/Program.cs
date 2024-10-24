@@ -1,6 +1,7 @@
 using MongoDBBloggerPost.Core.Factories;
 using MongoDBBloggerPost.Core.Helpers;
 using MongoDBBloggerPost.Model;
+using MongoDBBloggerPost.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ builder.Services.AddSingleton(EntityServiceFactory<UsersModel>.Create(Collection
 builder.Services.AddSingleton(EntityServiceFactory<BlogsModel>.Create(CollectionName.Blogs));
 builder.Services.AddSingleton(EntityServiceFactory<PostsModel>.Create(CollectionName.Posts));
 builder.Services.AddSingleton(EntityServiceFactory<CommentsModel>.Create(CollectionName.Comments));
+builder.Services.AddSingleton(ClientFactory.Create());
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

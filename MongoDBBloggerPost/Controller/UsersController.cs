@@ -86,30 +86,6 @@ namespace MongoDBBloggerPost.Controller
             }
         }
 
-        [HttpGet("GetUserBlogs")]
-        public async Task<List<BlogsModel>> GetUserBlogs(string id)
-        {
-            try
-            {
-                var user = await _userService.GetById(id);
-                var blogs = new List<BlogsModel>();
-
-                if (user.blogIds != null)
-                {
-                    foreach (var blogId in user.blogIds)
-                    {
-                        blogs.Add(await _blogService.GetById(blogId.ToString()));
-                    }
-                }
-                return blogs;
-            }
-            catch (System.Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
-        }
-
         [HttpPost("SaveUser")]
         public async Task SaveUser(UsersModel user)
         {

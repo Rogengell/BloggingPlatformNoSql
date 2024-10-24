@@ -17,12 +17,15 @@ namespace MongoDBBloggerPost.Controller
         private readonly EntityService<BlogsModel> _blogService;
         private readonly EntityService<PostsModel> _postService;
         private readonly EntityService<UsersModel> _userService;
+        private readonly Services.Client _client;
 
-        public BlogsController(EntityService<BlogsModel> blogService, EntityService<PostsModel> postService , EntityService<UsersModel> userService)
+        public BlogsController(EntityService<BlogsModel> blogService, EntityService<PostsModel> postService , EntityService<UsersModel> userService, Services.Client client)
         {
             _blogService = blogService;
             _postService = postService;
             _userService = userService;
+            _client = client;
+            _client.Connect();
         }
 
         [HttpGet("GetBlog")]
@@ -48,17 +51,22 @@ namespace MongoDBBloggerPost.Controller
         {
             try
             {
-                var blog = await _blogService.GetById(id);
-                var posts = new List<PostsModel>();
+                var posts = _client.GetPosts(id);
+                
+                if (posts.Count<=0){
+                    var blog = await _blogService.GetById(id);
+                    posts = new List<PostsModel>();
 
-                if (blog.postIds == null)
-                {
-                   return posts;
-                }
+                    if (blog.postIds == null)
+                    {
+                    return posts;
+                    }
 
-                foreach (var postId in blog.postIds)
-                {
-                    posts.Add(await _postService.GetById(postId.ToString()));
+                    foreach (var postId in blog.postIds)
+                    {
+                        posts.Add(await _postService.GetById(postId.ToString()));
+                    }
+                    _client.SavePosts(id,posts);
                 }
 
                 return posts;
