@@ -32,7 +32,7 @@ namespace MongoDBBloggerPost.Controller
         {
             try
             {
-                if(id == null)
+                if (id == null)
                 {
                     throw new ArgumentNullException(nameof(id));
                 }
@@ -67,11 +67,11 @@ namespace MongoDBBloggerPost.Controller
                 var user = await _userService.GetById(id);
                 var blogs = new List<BlogsModel>();
 
-                if(user.blogIds == null)
+                if (user.blogIds == null)
                 {
                     return blogs;
                 }
-                
+
                 foreach (var blogId in user.blogIds)
                 {
                     blogs.Add(await _blogService.GetById(blogId));
@@ -86,29 +86,6 @@ namespace MongoDBBloggerPost.Controller
             }
         }
 
-        [HttpGet("GetUserBlogs")]
-        public async Task<List<BlogsModel>> GetUserBlogs(string id)
-        {
-            try
-            {
-                var user = await _userService.GetById(id);
-                var blogs = new List<BlogsModel>();
-
-                if (user.blogIds != null)
-                {
-                    foreach (var blogId in user.blogIds)
-                    {
-                        blogs.Add(await _blogService.GetById(blogId.ToString()));
-                    }
-                }
-                return blogs;
-            }
-            catch (System.Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
-        }
 
         [HttpPost("SaveUser")]
         public async Task SaveUser(UsersModel user)
@@ -178,7 +155,8 @@ namespace MongoDBBloggerPost.Controller
                     throw new ArgumentNullException(nameof(user));
                 }
                 await _userService.Delete(user);
-            }catch (System.Exception ex)
+            }
+            catch (System.Exception ex)
             {
                 System.Console.WriteLine("something went wrong while deleting user" + ex.Message);
             }

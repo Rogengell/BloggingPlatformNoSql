@@ -13,6 +13,6 @@ namespace MongoDBBloggerPost.Model
         public string userName { get; set; } = "";
         public string? title { get; set; }
         public string? content { get; set; }
-        public List<ObjectId>? commentIds { get; set; }
+        public List<string>? commentIds { get; set; }
     }
 }

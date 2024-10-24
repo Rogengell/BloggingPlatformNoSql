@@ -13,11 +13,13 @@ namespace MongoDBBloggerPost.Controller
     [Route("[controller]")]
     public class CommentsController : ControllerBase
     {
-        private readonly EntityService<CommentsModel> _entityService;
+        private readonly EntityService<CommentsModel> _commentsService;
+        private readonly EntityService<PostsModel> _postService;
 
-        public CommentsController(EntityService<CommentsModel> entityService)
+        public CommentsController(EntityService<CommentsModel> commentsService, EntityService<PostsModel> postService)
         {
-            _entityService = entityService;
+            _commentsService = commentsService;
+            _postService = postService;
         }
 
         [HttpGet("GetComment")]
@@ -29,12 +31,12 @@ namespace MongoDBBloggerPost.Controller
                 {
                     throw new ArgumentNullException(nameof(id));
                 }
-                
-                return await _entityService.GetById(id);
+
+                return await _commentsService.GetById(id);
             }
             catch (System.Exception ex)
             {
-                System.Console.WriteLine("something went wrong while getting comment "+ ex.Message);
+                System.Console.WriteLine("something went wrong while getting comment " + ex.Message);
                 throw;
             }
         }
@@ -45,7 +47,7 @@ namespace MongoDBBloggerPost.Controller
         {
             try
             {
-                return await _entityService.GetAll();
+                return await _commentsService.GetAll();
             }
             catch (System.Exception ex)
             {
@@ -55,7 +57,7 @@ namespace MongoDBBloggerPost.Controller
         }
 
         [HttpPost("SaveComment")]
-        public async Task SaveComment(string userId, CommentsModel comment)
+        public async Task SaveComment(string userId, string PostId, CommentsModel comment)
         {
             try
             {
@@ -66,7 +68,18 @@ namespace MongoDBBloggerPost.Controller
                 comment._id = ObjectId.GenerateNewId();
                 comment.id = comment._id.ToString();
                 comment.userId = userId;
-                await _entityService.Save(comment);
+
+                var post = await _postService.GetById(PostId);
+
+                if (post.commentIds == null)
+                {
+                    post.commentIds = new List<string>();
+                }
+
+                post.commentIds.Add(comment.id);
+                await _postService.Update(post);
+
+                await _commentsService.Save(comment);
             }
             catch (System.Exception ex)
             {
@@ -84,7 +97,7 @@ namespace MongoDBBloggerPost.Controller
                 {
                     throw new ArgumentNullException(nameof(comment));
                 }
-                await _entityService.Update(comment);
+                await _commentsService.Update(comment);
             }
             catch (System.Exception ex)
             {
@@ -102,7 +115,7 @@ namespace MongoDBBloggerPost.Controller
                 {
                     throw new ArgumentNullException(nameof(id));
                 }
-                await _entityService.Delete(GetComments(id).Result);
+                await _commentsService.Delete(GetComments(id).Result);
             }
             catch (System.Exception ex)
             {

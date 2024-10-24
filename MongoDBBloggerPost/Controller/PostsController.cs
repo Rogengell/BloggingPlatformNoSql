@@ -15,11 +15,13 @@ namespace MongoDBBloggerPost.Controller
     {
         private readonly EntityService<PostsModel> _postService;
         private readonly EntityService<CommentsModel> _commentService;
+        private readonly EntityService<BlogsModel> _blogService;
 
-        public PostsController(EntityService<PostsModel> entityService, EntityService<CommentsModel> commentService)
+        public PostsController(EntityService<PostsModel> entityService, EntityService<BlogsModel> blogService, EntityService<CommentsModel> commentService)
         {
             _postService = entityService;
             _commentService = commentService;
+            _blogService = blogService;
         }
 
         [HttpGet("GetPost")]
@@ -61,7 +63,7 @@ namespace MongoDBBloggerPost.Controller
                 {
                     throw new ArgumentNullException(nameof(post.commentIds));
                 }
-                
+
                 foreach (var commentId in post.commentIds)
                 {
                     comments.Add(await _commentService.GetById(commentId.ToString()));
@@ -76,7 +78,7 @@ namespace MongoDBBloggerPost.Controller
         }
 
         [HttpPost("SavePost")]
-        public async Task SavePost(string userId, PostsModel post)
+        public async Task SavePost(string userId, string blogId, PostsModel post)
         {
             try
             {
@@ -84,9 +86,21 @@ namespace MongoDBBloggerPost.Controller
                 {
                     throw new ArgumentNullException(nameof(post));
                 }
+
+
                 post._id = ObjectId.GenerateNewId();
                 post.id = post._id.ToString();
                 post.userId = userId;
+
+
+                var blog = await _blogService.GetById(blogId);
+                if (blog.postIds == null)
+                {
+                    blog.postIds = new List<string>();
+                }
+                blog.postIds?.Add(post.id);
+                await _blogService.Update(blog);
+
                 await _postService.Save(post);
             }
             catch (System.Exception ex)
@@ -127,7 +141,7 @@ namespace MongoDBBloggerPost.Controller
             }
             catch (System.Exception ex)
             {
-                System.Console.WriteLine("something went wrong while deleting post" + ex.Message); 
+                System.Console.WriteLine("something went wrong while deleting post" + ex.Message);
                 throw;
             }
         }

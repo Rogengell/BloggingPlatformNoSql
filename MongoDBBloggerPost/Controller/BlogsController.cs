@@ -18,7 +18,7 @@ namespace MongoDBBloggerPost.Controller
         private readonly EntityService<PostsModel> _postService;
         private readonly EntityService<UsersModel> _userService;
 
-        public BlogsController(EntityService<BlogsModel> blogService, EntityService<PostsModel> postService , EntityService<UsersModel> userService)
+        public BlogsController(EntityService<BlogsModel> blogService, EntityService<PostsModel> postService, EntityService<UsersModel> userService)
         {
             _blogService = blogService;
             _postService = postService;
@@ -53,7 +53,7 @@ namespace MongoDBBloggerPost.Controller
 
                 if (blog.postIds == null)
                 {
-                   return posts;
+                    return posts;
                 }
 
                 foreach (var postId in blog.postIds)
@@ -91,6 +91,7 @@ namespace MongoDBBloggerPost.Controller
                     user.blogIds = new List<string>();
                 }
                 user.blogIds.Add(blog.id);
+                await _userService.Update(user);
 
                 await _blogService.Save(blog);
             }
