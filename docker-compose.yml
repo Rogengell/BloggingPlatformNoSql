@@ -12,5 +12,12 @@ services:
       - "27017:27017" # Expose MongoDB on port 27017 to your host machine
     volumes:
       - mongo_data:/data/db  # Persist MongoDB data to a Docker volume
+
+  redis:
+    image: redislabs/redisearch:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+      
 volumes:
   mongo_data:

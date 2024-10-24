@@ -86,7 +86,6 @@ namespace MongoDBBloggerPost.Controller
             }
         }
 
-
         [HttpPost("SaveUser")]
         public async Task SaveUser(UsersModel user)
         {
