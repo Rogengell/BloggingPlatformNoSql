@@ -65,7 +65,7 @@ namespace MongoDBBloggerPost.Controller
                 {
                     throw new ArgumentNullException(nameof(comment));
                 }
-                comment._id = ObjectId.GenerateNewId();
+                comment._id = ObjectId.GenerateNewId().ToString();
                 comment.id = comment._id.ToString();
                 comment.userId = userId;
 

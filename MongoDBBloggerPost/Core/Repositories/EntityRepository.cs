@@ -28,7 +28,7 @@ namespace MongoDBBloggerPost.Core.Repositories
                 throw new ArgumentException("Invalid ObjectId", nameof(id));
             }
 
-            var objectId = new ObjectId(id);
+            var objectId = id;
             var collection = _client.Collection<T>(_databaseName, _collectionName);
 
             return await collection.Find(x => x._id == objectId).FirstOrDefaultAsync();

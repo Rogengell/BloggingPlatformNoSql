@@ -67,6 +67,7 @@ namespace MongoDBBloggerPost.Controller
                     {
                         posts.Add(await _postService.GetById(postId.ToString()));
                     }
+                    Console.WriteLine("Create Cash");
                     _client.SavePosts(id, posts);
                 }
 
@@ -89,7 +90,7 @@ namespace MongoDBBloggerPost.Controller
                     throw new ArgumentNullException(nameof(blog));
                 }
 
-                blog._id = ObjectId.GenerateNewId();
+                blog._id = ObjectId.GenerateNewId().ToString();
                 blog.id = blog._id.ToString();
                 blog.authorId = userId;
 

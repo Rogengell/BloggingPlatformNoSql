@@ -47,5 +47,34 @@ namespace MongoDBBloggerPost.Services
         {
             GetDatabase().StringSet(id, Newtonsoft.Json.JsonConvert.SerializeObject(post));
         }
+
+        public async Task CashUpdatePosts(string id)
+        {
+            try
+            {
+                var server = _redis.GetServer(_redis.GetEndPoints()[0]);
+
+                List<RedisKey> keysToDelete = new List<RedisKey>();
+
+                await foreach (var key in server.KeysAsync(pattern: id))
+                {
+                    keysToDelete.Add(key);
+                }
+
+                if (keysToDelete.Count > 0)
+                {
+                    await GetDatabase().KeyDeleteAsync(keysToDelete.ToArray());
+                    Console.WriteLine($"Deleted {keysToDelete.Count} keys for ID: {id}");
+                }
+                else
+                {
+                    Console.WriteLine($"No keys found for ID: {id}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while deleting keys for ID {id}: {ex.Message}");
+            }
+        }
     }
 }

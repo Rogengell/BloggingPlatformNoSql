@@ -96,7 +96,7 @@ namespace MongoDBBloggerPost.Controller
                     throw new ArgumentNullException(nameof(user));
                 }
 
-                user._id = ObjectId.GenerateNewId();
+                user._id = ObjectId.GenerateNewId().ToString();
                 user.id = user._id.ToString();
                 await _userService.Save(user);
             }
@@ -134,7 +134,7 @@ namespace MongoDBBloggerPost.Controller
                     }
                 }
 
-                user._id = ObjectId.Parse(id);
+                user._id = id;
                 await _userService.Update(user);
             }
             catch (System.Exception ex)

@@ -16,12 +16,16 @@ namespace MongoDBBloggerPost.Controller
         private readonly EntityService<PostsModel> _postService;
         private readonly EntityService<CommentsModel> _commentService;
         private readonly EntityService<BlogsModel> _blogService;
+        
+        private readonly Services.Client _client;
 
-        public PostsController(EntityService<PostsModel> entityService, EntityService<BlogsModel> blogService, EntityService<CommentsModel> commentService)
+        public PostsController(EntityService<PostsModel> entityService, EntityService<BlogsModel> blogService, EntityService<CommentsModel> commentService,  Services.Client client)
         {
             _postService = entityService;
             _commentService = commentService;
             _blogService = blogService;
+            _client = client;
+            _client.Connect();
         }
 
         [HttpGet("GetPost")]
@@ -88,7 +92,7 @@ namespace MongoDBBloggerPost.Controller
                 }
 
 
-                post._id = ObjectId.GenerateNewId();
+                post._id = ObjectId.GenerateNewId().ToString();
                 post.id = post._id.ToString();
                 post.userId = userId;
 
@@ -102,6 +106,8 @@ namespace MongoDBBloggerPost.Controller
                 await _blogService.Update(blog);
 
                 await _postService.Save(post);
+
+                await CashUpdate(blogId);
             }
             catch (System.Exception ex)
             {
@@ -144,6 +150,11 @@ namespace MongoDBBloggerPost.Controller
                 System.Console.WriteLine("something went wrong while deleting post" + ex.Message);
                 throw;
             }
+        }
+
+        private async Task CashUpdate(string id)
+        {
+            await _client.CashUpdatePosts(id);
         }
     }
 }
