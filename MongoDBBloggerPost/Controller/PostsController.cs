@@ -143,6 +143,15 @@ namespace MongoDBBloggerPost.Controller
                 {
                     throw new ArgumentNullException(nameof(post));
                 }
+
+                if (post.commentIds != null)
+                {
+                    foreach (var postId in post.commentIds)
+                    {
+                        var comment = await _commentService.GetById(postId);
+                        await _commentService.Delete(comment);
+                    }
+                }
                 await _postService.Delete(post);
             }
             catch (System.Exception ex)

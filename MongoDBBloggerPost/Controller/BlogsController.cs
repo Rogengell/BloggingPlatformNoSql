@@ -121,7 +121,28 @@ namespace MongoDBBloggerPost.Controller
         [HttpDelete("DeleteBlog")]
         public async Task DeleteBlog(BlogsModel blog)
         {
-            await _blogService.Delete(blog);
+            try
+            {
+                if (blog == null)
+                {
+                    throw new ArgumentNullException(nameof(blog));
+                }
+
+                if (blog.postIds != null)
+                {
+                    foreach (var postId in blog.postIds)
+                    {
+                        var post = await _postService.GetById(postId);
+                        await _postService.Delete(post);
+                    }
+                }
+                await _blogService.Delete(blog);             
+            }
+            catch (System.Exception ex)
+            {
+                System.Console.WriteLine("something went wrong while deleting blog" + ex.Message);
+                throw;
+            }
         }
     }
 }

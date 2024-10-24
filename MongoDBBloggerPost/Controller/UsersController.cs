@@ -153,6 +153,15 @@ namespace MongoDBBloggerPost.Controller
                 {
                     throw new ArgumentNullException(nameof(user));
                 }
+
+                if (user.blogIds != null)
+                {
+                    foreach (var blogId in user.blogIds)
+                    {
+                        var blog = await _blogService.GetById(blogId);
+                        await _blogService.Delete(blog);
+                    }
+                }
                 await _userService.Delete(user);
             }
             catch (System.Exception ex)
