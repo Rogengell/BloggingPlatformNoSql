@@ -36,7 +36,7 @@ namespace MongoDBBloggerPost.Services
         public List<PostsModel> GetPosts(string id)
         {
             var posts = GetDatabase().StringGet(id);
-            if(posts.HasValue)
+            if (posts.HasValue)
             {
                 return Newtonsoft.Json.JsonConvert.DeserializeObject<List<PostsModel>>(posts.ToString());
             }
@@ -75,6 +75,25 @@ namespace MongoDBBloggerPost.Services
             {
                 Console.WriteLine($"Error while deleting keys for ID {id}: {ex.Message}");
             }
+        }
+
+        public bool CommentRateLimit(string userId, string postId)
+        {
+            var key = $"{userId}{postId}";
+            var userComments = GetDatabase().StringGet(key);
+
+            int commentsCount = userComments.HasValue ? int.Parse(userComments.ToString()) : 0;
+            if (commentsCount >= 5)
+            {
+                return false;
+            }
+
+            GetDatabase().StringIncrement(key);
+            if (commentsCount == 0)
+            {
+                GetDatabase().KeyExpire(key, TimeSpan.FromSeconds(30));
+            }
+            return true;
         }
     }
 }

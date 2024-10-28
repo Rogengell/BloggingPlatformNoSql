@@ -16,10 +16,10 @@ namespace MongoDBBloggerPost.Controller
         private readonly EntityService<PostsModel> _postService;
         private readonly EntityService<CommentsModel> _commentService;
         private readonly EntityService<BlogsModel> _blogService;
-        
+
         private readonly Services.Client _client;
 
-        public PostsController(EntityService<PostsModel> entityService, EntityService<BlogsModel> blogService, EntityService<CommentsModel> commentService,  Services.Client client)
+        public PostsController(EntityService<PostsModel> entityService, EntityService<BlogsModel> blogService, EntityService<CommentsModel> commentService, Services.Client client)
         {
             _postService = entityService;
             _commentService = commentService;
@@ -117,15 +117,19 @@ namespace MongoDBBloggerPost.Controller
         }
 
         [HttpPut("UpdatePost")]
-        public async Task UpdatePost(PostsModel post)
+        public async Task UpdatePost(string userId, string blogId, PostsModel post)
         {
             try
             {
+                // userId will be our checker so no other can update the post
                 if (post == null)
                 {
                     throw new ArgumentNullException(nameof(post));
                 }
                 await _postService.Update(post);
+
+                var blog = await _blogService.GetById(blogId);
+                await CashUpdate(blogId);
             }
             catch (System.Exception ex)
             {
@@ -135,7 +139,7 @@ namespace MongoDBBloggerPost.Controller
         }
 
         [HttpDelete("DeletePost")]
-        public async Task DeletePost(PostsModel post)
+        public async Task DeletePost(string userId, string blogId, PostsModel post)
         {
             try
             {

@@ -19,6 +19,7 @@ namespace MongoDBBloggerPost.Controller
         private readonly EntityService<UsersModel> _userService;
         private readonly Services.Client _client;
 
+        // TODO : add userId to update and delete blogs
         public BlogsController(EntityService<BlogsModel> blogService, EntityService<PostsModel> postService, EntityService<UsersModel> userService, Services.Client client)
         {
             _blogService = blogService;
@@ -136,7 +137,7 @@ namespace MongoDBBloggerPost.Controller
                         await _postService.Delete(post);
                     }
                 }
-                await _blogService.Delete(blog);             
+                await _blogService.Delete(blog);
             }
             catch (System.Exception ex)
             {

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDBBloggerPost.Core.Services;
 using MongoDBBloggerPost.Model;
+using MongoDBBloggerPost.Services;
 
 namespace MongoDBBloggerPost.Controller
 {
@@ -15,11 +16,15 @@ namespace MongoDBBloggerPost.Controller
     {
         private readonly EntityService<CommentsModel> _commentsService;
         private readonly EntityService<PostsModel> _postService;
+        private readonly Services.Client _client;
 
-        public CommentsController(EntityService<CommentsModel> commentsService, EntityService<PostsModel> postService)
+        // TODO : add userId and PostId to update and delete comments
+        public CommentsController(EntityService<CommentsModel> commentsService, EntityService<PostsModel> postService, Client client)
         {
             _commentsService = commentsService;
             _postService = postService;
+            _client = client;
+            _client.Connect();
         }
 
         [HttpGet("GetComment")]
@@ -57,7 +62,7 @@ namespace MongoDBBloggerPost.Controller
         }
 
         [HttpPost("SaveComment")]
-        public async Task SaveComment(string userId, string PostId, CommentsModel comment)
+        public async Task SaveComment(string userId, string postId, CommentsModel comment)
         {
             try
             {
@@ -65,11 +70,17 @@ namespace MongoDBBloggerPost.Controller
                 {
                     throw new ArgumentNullException(nameof(comment));
                 }
+
+                if (!_client.CommentRateLimit(userId, postId))
+                {
+                    throw new Exception("Comment rate limit exceeded");
+                }
+
                 comment._id = ObjectId.GenerateNewId().ToString();
                 comment.id = comment._id.ToString();
                 comment.userId = userId;
 
-                var post = await _postService.GetById(PostId);
+                var post = await _postService.GetById(postId);
 
                 if (post.commentIds == null)
                 {
